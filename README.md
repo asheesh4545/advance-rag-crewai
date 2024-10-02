@@ -24,7 +24,7 @@ The application consists of several key components:
 
 ## Prerequisites
 
-- Python 3.7+
+- Python 3.12.3
 - Groq API key
 - Tavily API key
 - Sarvam AI API key
