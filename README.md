@@ -2,6 +2,9 @@
 
 This project implements an advanced Retrieval-Augmented Generation (RAG) system with voice output capabilities using CrewAI. It uses a crew-based approach to process queries, classify intents, and provide appropriate responses.
 
+![github](https://github.com/user-attachments/assets/269d75f3-8916-4f16-b5e7-ff723c8909be)
+
+
 ## Repository
 
 [https://github.com/asheesh4545/advance-rag-crewai](https://github.com/asheesh4545/advance-rag-crewai)
@@ -102,4 +105,25 @@ The `soundutils.py` file is responsible for handling the text-to-speech function
 5. **Error Handling**: The system includes error handling to manage potential issues with the API connection or audio playback, ensuring a smooth user experience.
 
 To use the sound utilities effectively, ensure that your Sarvam AI API key is correctly set in the `.env` file and that your system's audio output is properly configured.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
