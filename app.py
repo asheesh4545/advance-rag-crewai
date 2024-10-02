@@ -16,12 +16,12 @@ from helper import ingest_and_retrieve_docs, ingest
 from soundutils import initialize_audio, process_and_play_text
 
 
-
-
 # Load environment variables and set up API keys
 load_dotenv()
 GROQ_API_KEY = os.getenv('GROQ_API_KEY')
-os.environ['TAVILY_API_KEY'] = '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'
+TAVILY_API_KEY = os.getenv('TAVILY_API_KEY')
+
+
 
 if not GROQ_API_KEY:
     raise ValueError("GROQ_API_KEY is not set in the environment variables")
@@ -34,7 +34,7 @@ llm = ChatGroq(
 )
 
 # Set up tools
-web_search_tool = TavilySearchResults(k=3)
+web_search_tool = TavilySearchResults(k=2)
 
 
 query_retrieval_tool = Tool(
