@@ -1,0 +1,8 @@
+# Ignore specific Python files
+app8.py
+app9.py
+sound.py
+soundapp.py
+
+# Ignore .env file
+.env
