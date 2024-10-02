@@ -8,7 +8,7 @@ from langchain_community.document_loaders import PyPDFLoader, DirectoryLoader
 from langchain.text_splitter import RecursiveCharacterTextSplitter
 from langchain_groq import ChatGroq
 from langchain_community.tools.tavily_search import TavilySearchResults
-
+import streamlit as st
 import asyncio
 import aiohttp
 
@@ -33,7 +33,7 @@ llm = ChatGroq(
     api_key=GROQ_API_KEY
 )
 
-# Set up tools
+# Getting the first 2 search results
 web_search_tool = TavilySearchResults(k=2)
 
 
@@ -46,11 +46,11 @@ query_retrieval_tool = Tool(
 
 all_chunk_retrieval_tool = Tool(
     name="AllChunkRetrieval",
-    func=lambda x: ingest(),  # Use a lambda function to call ingest without arguments
+    func=lambda x: ingest(),  
     description="Retrieves all document chunks from the database"
 )
 
-# Define agents
+# We need to intriduce agents with their goals
 intent_classifier = Agent(
     role='Intent Classifier',
     goal='Classify the intent of the user query',
@@ -119,7 +119,8 @@ answer_formulator = Agent(
     llm=llm
 )
 
-# Define tasks
+# Now we need to define the tasks.
+#WE WILL BE USING THE TASK OUTPUT AS INPUT TO THE SARVAM API (TEXT-TO-SPEECH)
 def create_intent_classification_task(query):
     return Task(
         description=f"Classify the intent of the query: '{query}'. Determine if it's a greeting, a document inquiry, or a general question.",
@@ -171,7 +172,9 @@ def create_answer_task(original_question):
         expected_output="A comprehensive answer to the original question"
     )
 
-# Define crews
+# Here we define 4 crew
+
+#The search intent crew
 def create_intent_crew():
     return Crew(
         agents=[intent_classifier],
@@ -179,6 +182,7 @@ def create_intent_crew():
         verbose=True
     )
 
+#Hello/hi/Greeting Crew
 def create_greeting_crew():
     return Crew(
         agents=[greeter],
@@ -186,6 +190,7 @@ def create_greeting_crew():
         verbose=True
     )
 
+#Tell me about this document crew
 def create_document_summary_crew():
     return Crew(
         agents=[summarize_agent],
@@ -193,6 +198,7 @@ def create_document_summary_crew():
         verbose=True
     )
 
+#General Search Crew
 def create_qa_crew(question):
     return Crew(
         agents=[context_retriever, context_analyzer, web_searcher, answer_formulator],
@@ -205,32 +211,6 @@ def create_qa_crew(question):
         verbose=True
     )
 
-# Main function to process queries
-# def process_query(query):
-#     intent_crew = create_intent_crew()
-#     intent_crew.tasks[0].description = f"Classify the intent of the query: '{query}'. Determine if it's a greeting, a document inquiry, or a general question."
-#     x = intent_crew.kickoff()
-#     intent = str(x)
-
-
-#     if "greeting" in intent:
-#         greeting_crew = create_greeting_crew()
-#         return greeting_crew.kickoff()
-#     elif "document_inquiry" in intent:
-#         document_crew = create_document_summary_crew()
-#         return document_crew.kickoff()
-#     else:
-#         qa_crew = create_qa_crew(query)
-#         return qa_crew.kickoff()
-
-# # Example usage
-# if __name__ == "__main__":
-#     user_query = "Hi I am Asheesh"
-#     result = process_query(user_query)
-#     print(f"Final Answer: {result}")
-
-
-import streamlit as st
 
 async def process_query(query):
     intent_crew = create_intent_crew()
@@ -276,7 +256,7 @@ def run_async(coroutine):
     asyncio.set_event_loop(loop)
     return loop.run_until_complete(coroutine)
 
-st.title("Query Processing and Audio Playback App")
+st.title("Advance RAG with Voice")
 
 user_query = st.text_input("Enter your query:")
 
